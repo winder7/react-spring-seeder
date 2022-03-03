@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+
+  back:
+    stdin_open: true
+    tty: true
+    build:
+      context: petservice
+      dockerfile: Dockerfile
+    container_name: "petfinder-back"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - local
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: "petfinder-pgadmin"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "root@email.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    ports:
+      - "9090:80"
+    depends_on:
+      - db
+    networks:
+      - local
+
+  db:
+    image: postgres
+    container_name: "petfinder-db"
+    ports:
+      - "5454:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=db
+    networks:
+      - local
+
+networks:
+  local:
+    driver: bridge
